@@ -3,14 +3,16 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 
 @Injectable()
 export class ProductService {
+  private products: Product[] = []; // Aquí debes tener tus productos, puede ser una base de datos o un array en memoria
+
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-  ) {}
+  ) { }
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     try {
@@ -42,7 +44,40 @@ export class ProductService {
       }
       return produc;
     } catch (error) {
-      throw new InternalServerErrorException('Error al buscar usuario por ID');
+      throw new InternalServerErrorException('Error al buscar producto por ID');
+    }
+  }
+
+  async findOneByName(nameProduct: string): Promise<Product> {
+    try {
+      const nameProduc = await this.productRepository.findOne({ where: { nameProduct } });
+      if (!nameProduc) {
+        throw new NotFoundException('Producto no encontrado');
+      }
+      return nameProduc;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al buscar producto por nombre ID');
+    }
+  }
+
+
+  // Este método busca productos por un rango de precios de venta
+  async findByPriceSellRange(minPrice: number = 0, maxPrice: number = Infinity): Promise<Product[]> {
+    try {
+      // Verificar si maxPrice es Infinity y ajustar la consulta en consecuencia
+      if (maxPrice === Infinity) {
+        return await this.productRepository.createQueryBuilder('product')
+          .where('product.priceSellProduct >= :minPrice', { minPrice })
+          .getMany();
+      } else {
+        return await this.productRepository.createQueryBuilder('product')
+          .where('product.priceSellProduct >= :minPrice', { minPrice })
+          .andWhere('product.priceSellProduct <= :maxPrice', { maxPrice })
+          .getMany();
+      } 
+    } catch (error) {
+      console.error('Error al recuperar los productos:', error.message);
+      throw new InternalServerErrorException('Error al buscar producto');
     }
   }
 
