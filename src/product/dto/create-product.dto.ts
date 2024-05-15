@@ -20,8 +20,8 @@ export class CreateProductDto {
     @IsNotEmpty()
     amountProduct: number;
 
-    @IsDateString()
-    dateCreateProduct?: string;
+/*    @IsString()
+    dateCreateProduct?: string;*/
 
     @IsArray()
     @IsString({ each: true }) // Para validar que cada elemento del array sea una string
