@@ -75,3 +75,10 @@ Nest is [MIT licensed](LICENSE).
 
 ## install
 npm i typeorm
+
+
+npm install typeorm @nestjs/typeorm
+
+
+npm i @nestjs/class-validator
+

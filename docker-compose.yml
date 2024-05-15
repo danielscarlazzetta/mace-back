@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mace
+    environment:
+      MYSQL_ROOT_PASSWORD: passmace123123
+      MYSQL_DATABASE: mace
+    ports:
+      - '3307:3306'
