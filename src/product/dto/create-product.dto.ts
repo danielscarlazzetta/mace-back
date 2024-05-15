@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsNotEmpty, IsNumber, IsString, Length, isString } from "@nestjs/class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsString, Length, isString } from "@nestjs/class-validator";
 
 
 export class CreateProductDto {
@@ -25,6 +25,6 @@ export class CreateProductDto {
 
     @IsArray()
     @IsString({ each: true }) // Para validar que cada elemento del array sea una string
-    imageUrls?: string[];
+    imageUrls: string[];
 
 }
