@@ -7,7 +7,7 @@ import { UpdateTagDto } from './dto/update-tag.dto';
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
-  @Post('addTag')
+  @Post('addtag')
   create(@Body() createTagDto: CreateTagDto) {
     return this.tagsService.create(createTagDto);
   }
