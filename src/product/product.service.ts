@@ -81,8 +81,17 @@ export class ProductService {
     }
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async updateProduct(id: string, updatedProductData: UpdateProductDto): Promise<Product> {
+    try {
+      const product = await this.productRepository.findOne({ where: { id } });
+      if (!product) {
+        throw new NotFoundException(`Producto con ID ${id} no encontrado.`);
+      }
+      Object.assign(product, updatedProductData);
+      return await this.productRepository.save(product);
+    } catch (error) {
+      throw new InternalServerErrorException('Error al editar producto');
+    }
   }
 
   remove(id: number) {
