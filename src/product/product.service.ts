@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -16,12 +16,11 @@ export class ProductService {
     try {
       const product = this.productRepository.create({
         ...createProductDto,
-        dateCreateProduct: new Date().toISOString(), // Genera la fecha de creación automáticamente
+        dateCreateProduct: new Date().toISOString(),
       });
       return await this.productRepository.save(product);
     } catch (error) {
       console.error('Error al crear el producto:', error.message);
-      // Lanza una excepción personalizada con un mensaje específico
       throw new HttpException('Error al crear el producto', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -31,12 +30,20 @@ export class ProductService {
       return await this.productRepository.find();
     } catch (error) {
       console.error('Error al recuperar los productos:', error.message);
-      throw error;
+      throw new InternalServerErrorException('Error al buscar producto');
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOneById(id: string): Promise<Product> {
+    try {
+      const produc = await this.productRepository.findOne({ where: { id } });
+      if (!produc) {
+        throw new NotFoundException('Producto no encontrado');
+      }
+      return produc;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al buscar usuario por ID');
+    }
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
