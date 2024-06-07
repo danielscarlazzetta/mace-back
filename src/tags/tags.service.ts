@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
 import { Tag } from './entities/tag.entity';
@@ -13,21 +18,38 @@ export class TagsService {
   ) {}
 
   async create(createTagDto: CreateTagDto): Promise<Tag> {
+    const { nameTags } = createTagDto;
+
+    // Verificar si el tag ya existe
+    const existingTag = await this.tagRepository.findOne({
+      where: { nameTags },
+    });
+    if (existingTag) {
+      throw new HttpException(
+        `El tag con el nombre ${nameTags} ya existe.`,
+        HttpStatus.CONFLICT,
+      );
+    }
+
     try {
-      const { nameTags } = createTagDto; // Extraer el nombre de la etiqueta del DTO
-      const tag = this.tagRepository.create({ nameTags }); // Crear la instancia de Tag con el nombre de la etiqueta
+      const tag = this.tagRepository.create({ nameTags });
       return await this.tagRepository.save(tag);
     } catch (error) {
-      console.error("Error al crear el Tag's: ", error.message);
+      console.error('Error al crear el Tag: ', error.message);
       throw new HttpException(
-        "Error al crear el Tag's ",
+        'Error al crear el Tag',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  findAll() {
-    return `This action returns all tags`;
+  async findAll(): Promise<Tag[]> {
+    try {
+      return await this.tagRepository.find();
+    } catch (error) {
+      console.error('Error al recuperar los Tags:', error.message);
+      throw new InternalServerErrorException('Error al buscar Tag');
+    }
   }
 
   findOne(id: number) {

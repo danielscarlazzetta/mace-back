@@ -12,7 +12,7 @@ export class TagsController {
     return this.tagsService.create(createTagDto);
   }
 
-  @Get()
+  @Get('tangs')
   findAll() {
     return this.tagsService.findAll();
   }
