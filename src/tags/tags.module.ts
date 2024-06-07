@@ -3,12 +3,13 @@ import { TagsService } from './tags.service';
 import { TagsController } from './tags.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Tag } from './entities/tag.entity';
+import { UpperOneLetterService } from 'src/services/upper-one-letter/upper-one-letter.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Tag]),
   ],
   controllers: [TagsController],
-  providers: [TagsService],
+  providers: [TagsService, UpperOneLetterService],
 })
 export class TagsModule {}

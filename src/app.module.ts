@@ -10,6 +10,6 @@ import { TagsModule } from './tags/tags.module';
 @Module({
   imports: [TypeOrmModule.forRoot(databaseConfig), ProductModule, AuthModule, TagsModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ],
 })
 export class AppModule {}

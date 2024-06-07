@@ -9,30 +9,34 @@ import { UpdateTagDto } from './dto/update-tag.dto';
 import { Tag } from './entities/tag.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UpperOneLetterService } from 'src/services/upper-one-letter/upper-one-letter.service';
 
 @Injectable()
 export class TagsService {
   constructor(
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
+    private readonly upperOneLetterService: UpperOneLetterService,
   ) {}
 
   async create(createTagDto: CreateTagDto): Promise<Tag> {
     const { nameTags } = createTagDto;
 
+    const transformedNameTags = this.upperOneLetterService.transformText(nameTags);
+
     // Verificar si el tag ya existe
     const existingTag = await this.tagRepository.findOne({
-      where: { nameTags },
+      where: { nameTags: transformedNameTags },
     });
     if (existingTag) {
       throw new HttpException(
-        `El tag con el nombre ${nameTags} ya existe.`,
+        `El tag con el nombre ${transformedNameTags} ya existe.`,
         HttpStatus.CONFLICT,
       );
     }
 
     try {
-      const tag = this.tagRepository.create({ nameTags });
+      const tag = this.tagRepository.create({ nameTags: transformedNameTags });
       return await this.tagRepository.save(tag);
     } catch (error) {
       console.error('Error al crear el Tag: ', error.message);
