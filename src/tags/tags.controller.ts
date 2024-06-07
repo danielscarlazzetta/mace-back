@@ -12,14 +12,19 @@ export class TagsController {
     return this.tagsService.create(createTagDto);
   }
 
-  @Get('tangs')
+  @Get('tags')
   findAll() {
     return this.tagsService.findAll();
   }
 
-  @Get(':id')
+  @Get('id/:id')
   findOne(@Param('id') id: string) {
-    return this.tagsService.findOne(+id);
+    return this.tagsService.findOneById(id);
+  }
+
+  @Get('nameTags/:nameTags')
+  findOneName(@Param('nameTags') nameProduct: string) {
+    return this.tagsService.findOneByName(nameProduct);
   }
 
   @Patch(':id')

@@ -3,6 +3,7 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
@@ -56,8 +57,28 @@ export class TagsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tag`;
+  async findOneById(id: string): Promise<Tag> {
+    try {
+      const tag = await this.tagRepository.findOne({ where: { id } });
+      if (!tag) {
+        throw new NotFoundException('Tag no encontrado');
+      }
+      return tag;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al buscar Tag por ID');
+    }
+  }
+
+  async findOneByName(nameTags: string): Promise<Tag> {
+    try {
+      const nameinTags = await this.tagRepository.findOne({ where: { nameTags } });
+      if (!nameinTags) {
+        throw new NotFoundException('Tag no encontrado');
+      }
+      return nameinTags;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al buscar tag por nombre ID');
+    }
   }
 
   update(id: number, updateTagDto: UpdateTagDto) {
