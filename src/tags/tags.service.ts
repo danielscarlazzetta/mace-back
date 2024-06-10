@@ -95,7 +95,11 @@ export class TagsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tag`;
+   async remove(id: string): Promise<void> {
+    const tag = await this.tagRepository.findOne({ where: { id } });
+    if (!tag) {
+      throw new NotFoundException(`Tag con ID ${id} no encontrado.`);
+    }
+    await this.tagRepository.remove(tag);
   }
 }
