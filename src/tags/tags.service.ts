@@ -81,8 +81,18 @@ export class TagsService {
     }
   }
 
-  update(id: number, updateTagDto: UpdateTagDto) {
-    return `This action updates a #${id} tag`;
+  //!
+  async update(id: string, updateTagDto: UpdateTagDto): Promise<Tag>  {
+    try {
+      const tag = await this.tagRepository.findOne({ where: { id } });
+      if (!tag) {
+        throw new NotFoundException(`Tag con ID ${id} no encontrado.`);
+      }
+      Object.assign(tag, updateTagDto);
+      return await this.tagRepository.save(tag);
+    } catch (error) {
+      throw new InternalServerErrorException('Error al editar producto');
+    }
   }
 
   remove(id: number) {
