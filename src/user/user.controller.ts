@@ -22,6 +22,21 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @Get('nameuser/:nombre')
+  findOneName(@Param('nombre') nombre: string) {
+    return this.userService.findOneByName(nombre);
+  }
+
+  @Get('emailUser/:email')
+  findOneEmail(@Param('email') email: string) {
+    return this.userService.findOneByEmail(email);
+  }
+
+  @Get('telefonoUser/:telefono')
+  findOneTElefono(@Param('telefono') telefono: string) {
+    return this.userService.findOneByTelefono(telefono);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
