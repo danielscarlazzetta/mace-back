@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductService {
-  private products: Product[] = []; // Aquí debes tener tus productos, puede ser una base de datos o un array en memoria
+  //private products: Product[] = []; // Aquí debes tener tus productos, puede ser una base de datos o un array en memoria
 
   constructor(
     @InjectRepository(Product)
